@@ -132,7 +132,13 @@ func newLocalTerminal(ctx *ServerContext) (*terminal, error) {
 	}
 
 	// Create handle to a PAM context.
-	pamContext, err := pam.New("sshd", ctx.Identity.Login)
+	pamContext, err := pam.New(&pam.Config{
+		ServiceName: "sshd",
+		Username:    ctx.Identity.Login,
+		Stdin:       pty,
+		Stderr:      pty,
+		Stdout:      pty,
+	})
 	if err != nil {
 		return nil, trace.Wrap(err)
 	}
